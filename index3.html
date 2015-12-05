@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>リンク抽出</title>
+
+  <script>
+
+    // IPC通信を行う
+    var ipc = require('ipc');
+    var info;
+
+    // onloadのタイミングで実行
+    window.onload = function () {
+      info = document.getElementById('result');
+      getLink();
+    };
+
+    // 非同期通信の関数
+    function getLink() {
+
+      // メインプロセスに引数を送信
+      ipc.send('mul-async', { target: 'http://www.yahoo.co.jp'} );
+
+      // 非同期通信の結果用のコールバック
+      ipc.on('mul-async-reply', function( args ) {
+
+        if( args === null ){
+          return;
+        }
+
+        var len = args.length;
+        var resultStr = '<ul>';
+
+        for(var i = 0; i < len; i++){
+          var text = args[i]['text'];
+          var href = args[i]['href'];
+          resultStr += '<li>' + text + ' / ' + href + '</li>';
+        }
+
+        resultStr += '</ul>';
+
+        insertMsg( resultStr );
+      });
+    }
+
+    // 返却値をHTMLに挿入
+    function insertMsg( msg ) {
+      info.innerHTML += msg + "<br>";
+    }
+
+  </script>
+</head>
+
+<body>
+
+<h1>リンク抽出</h1>
+<div id="result"></div>
+
+</body>
+
+</html>
