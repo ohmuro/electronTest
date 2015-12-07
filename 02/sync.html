@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sync Test</title>
+<script>
+  // IPC通信を行う
+  var ipc = require('ipc');
+  var info;
+
+  window.onload = function () {
+    info = document.getElementById('info');
+    testSync();
+  };
+
+  // 同期的に通信を行う
+  function testSync() {
+    // メインプロセスに引数を送信して答えを得る
+    var res = ipc.sendSync('mul-sync', {a:30, b:2});
+    insertMsg("sync result=" + res);
+  }
+
+  function insertMsg(msg) {
+    info.innerHTML += msg + "<br>";
+  }
+</script>
+</head>
+<body>
+<h1>Sync Test</h1>
+<p id="info"></p>
+</body>
+</html>

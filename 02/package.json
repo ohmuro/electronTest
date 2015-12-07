@@ -1,0 +1,5 @@
+{
+  "name"    : "sync-app",
+  "version" : "0.1.0",
+  "main"    : "sync.js"
+}

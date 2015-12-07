@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Hello Electron!</title>
+<script>
+window.onload = function () {
+var infoEle = document.getElementById("info");
+  infoEle.innerHTML =
+    "Node ver." + process.version + "<br>" +
+    "atom ver." + process.versions['electron'];
+};
+</script>
+</head>
+<body>
+<h1>Hello Electron!</h1>
+<p id="info"></p>
+</body>
+</html>

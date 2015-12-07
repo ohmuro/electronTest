@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<title>IPC Test</title>
+<script>
+  // IPC通信を行う
+  var ipc = require('ipc');
+  var info;
+
+  window.onload = function () {
+    info = document.getElementById('info');
+    testASync();
+  };
+
+  // 非同期に通信を行う
+  function testASync() {
+
+    // メインプロセスに引数を送信
+    ipc.send('mul-async', {a:30, b:2});
+
+    // 非同期通信の結果を受けたときのコールバック
+    ipc.on('mul-async-reply', function(arg) {
+      insertMsg("async result=" + arg);
+    });
+  }
+
+  function insertMsg(msg) {
+    info.innerHTML += msg + "<br>";
+  }
+</script>
+</head>
+<body>
+<h1>IPCのテスト</h1>
+<p id="info"></p>
+</body>
+</html>

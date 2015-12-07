@@ -16,16 +16,6 @@ app.on('ready', function(){
 
 // 同期プロセス通信
 ipc.on('mul-sync', function( event, arg ){
-
     console.log( arg );
     event.returnValue = arg.a * arg.b;
-
-});
-
-// 非同期プロセス通信
-ipc.on('mul-async', function( event, arg ){
-
-    console.log( arg );
-    var result = arg.a * arg.b;
-    event.sender.send('mul-async-reply', result);
 });

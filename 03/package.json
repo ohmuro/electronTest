@@ -1,0 +1,6 @@
+{
+  "name"    : "async-app",
+  "version" : "0.1.0",
+  "main"    : "async.js"
+}
+
