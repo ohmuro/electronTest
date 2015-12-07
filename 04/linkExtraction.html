@@ -1,63 +1,56 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="UTF-8">
-  <title>リンク抽出</title>
+<meta charset="UTF-8">
+<title>リンク抽出</title>
 
-  <script>
+<script>
+  // IPC通信を行う
+  var ipc = require('ipc');
+  var info;
 
-    // IPC通信を行う
-    var ipc = require('ipc');
-    var info;
+  // onloadのタイミングで実行
+  window.onload = function () {
+    info = document.getElementById('result');
+    getLink();
+  };
 
-    // onloadのタイミングで実行
-    window.onload = function () {
-      info = document.getElementById('result');
-      getLink();
-    };
+  // 非同期通信の関数
+  function getLink() {
 
-    // 非同期通信の関数
-    function getLink() {
+    // 非同期通信の結果用のコールバック
+    ipc.on('link-extraction-reply', function( args ) {
 
-      // メインプロセスに引数を送信
-      ipc.send('mul-async', { target: 'http://www.yahoo.co.jp'} );
+      if( args === null ){
+        return;
+      }
 
-      // 非同期通信の結果用のコールバック
-      ipc.on('mul-async-reply', function( args ) {
+      var len = args.length;
+      var resultStr = '<ul>';
 
-        if( args === null ){
-          return;
-        }
+      for(var i = 0; i < len; i++){
+        var text = args[i]['text'];
+        var href = args[i]['href'];
+        resultStr += '<li>' + text + ' : ' + href + '</li>';
+      }
 
-        var len = args.length;
-        var resultStr = '<ul>';
+      resultStr += '</ul>';
 
-        for(var i = 0; i < len; i++){
-          var text = args[i]['text'];
-          var href = args[i]['href'];
-          resultStr += '<li>' + text + ' / ' + href + '</li>';
-        }
+      insertMsg( resultStr );
+    });
+  }
 
-        resultStr += '</ul>';
+  // メインプロセスに引数を送信
+  ipc.send('link-extraction-async', { target: 'http://www.mitsue.co.jp/'} );
 
-        insertMsg( resultStr );
-      });
-    }
-
-    // 返却値をHTMLに挿入
-    function insertMsg( msg ) {
-      info.innerHTML += msg + "<br>";
-    }
-
-  </script>
+  // 返却値をHTMLに挿入
+  function insertMsg( msg ) {
+    info.innerHTML += msg + "<br>";
+  }
+</script>
 </head>
 
 <body>
-
-<h1>リンク抽出</h1>
 <div id="result"></div>
-
 </body>
-
 </html>

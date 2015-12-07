@@ -6,16 +6,16 @@ var mainWindow = null;
 // 起動
 app.on('ready', function(){
     mainWindow = new BrowserWindow({width:800, height:600});
-    mainWindow.loadUrl('file://' + __dirname + '/index2.html');
+    mainWindow.loadUrl('file://' + __dirname + '/async.html');
     mainWindow.on('closed', function(){
         mainWindow = null;
     });
 });
 
 // 非同期プロセス通信
-ipc.on('mul-async', function( event, arg ){
-    console.log( arg );
-    var result = arg.a * arg.b;
+ipc.on('async', function( event, args ){
+    console.log( args );
+    var result = args.value * 2;
     // レンダープロセスへsend
-    event.sender.send('mul-async-reply', result);
+    event.sender.send('async-reply', result);
 });

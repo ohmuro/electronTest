@@ -7,7 +7,7 @@ var mainWindow = null;
 app.on('ready', function(){
 
     mainWindow = new BrowserWindow({width:800, height:600});
-    mainWindow.loadUrl('file://' + __dirname + '/index2.html');
+    mainWindow.loadUrl('file://' + __dirname + '/sync.html');
     mainWindow.on('closed', function(){
         mainWindow = null;
     });
@@ -15,7 +15,7 @@ app.on('ready', function(){
 });
 
 // 同期プロセス通信
-ipc.on('mul-sync', function( event, arg ){
-    console.log( arg );
-    event.returnValue = arg.a * arg.b;
+ipc.on('sync', function( event, args ){
+    console.log( args );
+    event.returnValue = args.value * 2;
 });

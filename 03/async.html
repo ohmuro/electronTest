@@ -9,19 +9,19 @@
 
   window.onload = function () {
     info = document.getElementById('info');
-    testASync();
+    testAsync();
   };
 
   // 非同期に通信を行う
-  function testASync() {
-
-    // メインプロセスに引数を送信
-    ipc.send('mul-async', {a:30, b:2});
+  function testAsync() {
 
     // 非同期通信の結果を受けたときのコールバック
-    ipc.on('mul-async-reply', function(arg) {
+    ipc.on('async-reply', function(arg) {
       insertMsg("async result=" + arg);
     });
+
+    // メインプロセスに引数を送信
+    ipc.send('async', { value:200 });
   }
 
   function insertMsg(msg) {

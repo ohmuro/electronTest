@@ -1,19 +1,14 @@
-//
 var app = require('app');
 var BrowserWindow = require('browser-window');
 var ipc = require('ipc');
-
-//
 var client = require('cheerio-httpcli');
 var URL = require('url');
-
 var mainWindow = null;
 
-// 起動
 app.on('ready', function(){
 
     mainWindow = new BrowserWindow({width:800, height:600});
-    mainWindow.loadUrl('file://' + __dirname + '/index3.html');
+    mainWindow.loadUrl('file://' + __dirname + '/linkExtraction.html');
     mainWindow.on('closed', function(){
         mainWindow = null;
     });
@@ -21,18 +16,19 @@ app.on('ready', function(){
 });
 
 // 非同期プロセス通信
-ipc.on('mul-async', function( event, arg ){
+ipc.on('link-extraction-async', function( event, arg ){
 
     var target = arg['target'];
 
     client.fetch( target, {}, function(err, $, res) {
 
         if( err ){
-            // レンダラープロセスへsend
-            event.sender.send('mul-async-reply', null);
+            // エラーの場合、レンダラープロセスへnullを返す
+            event.sender.send('link-extraction-reply', null);
             return;
         }
 
+        // 一時保存用のArray
         var resulrObjArr = [];
 
         $("a").each(function( idx ) {
@@ -50,15 +46,15 @@ ipc.on('mul-async', function( event, arg ){
             // Objectにする
             var tempObj = {
                 text : text,
-                href : href
+                href : href2
             };
 
-            // 一時保存
+            // 保存しておく
             resulrObjArr.push( tempObj );
         });
 
-        // レンダラープロセスへsend
-        event.sender.send('mul-async-reply', resulrObjArr);
+        // レンダラープロセスへ返す
+        event.sender.send('link-extraction-reply', resulrObjArr);
     });
 
 });
